@@ -34,7 +34,7 @@ function GetGuildKills(client){
                 KillEvents.push(event.EventId)
                 let header = "[*"+event.Killer.GuildName+"*] __" + event.Killer.Name + "__ ("+event.Killer.AverageItemPower.toFixed(0)+")" + ' ⚔️ ' + "[*"+event.Victim.GuildName+"*] __" +  event.Victim.Name + "__ ("+event.Victim.AverageItemPower.toFixed(0)+")"
                 let assists = event.Participants.filter(p => p.Name != event.Killer.Name).map(p => p.Name)
-                client.channels.cache.get('1089130944939704391').send(messageEmbed(
+                client.channels.cache.get('1069880358130176010').send(messageEmbed(
                     header,
                     null,
                     "Assist: " + (event.Participants.filter(p => p.Name != event.Killer.Name).length > 0 ? assists : "none"),
