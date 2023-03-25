@@ -26,14 +26,6 @@ client.on('ready', () => {
     setInterval(() => GetGuildKills(client), 1000 * 60)
 })
 
-function GetData(){
-    axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/search?q=Sanctuary")
-        .then((res) => {
-            console.log(res.data)
-        })
-        .catch(err => console.log(err))
-}
-
 function GetGuildKills(client){
     axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?guildId="+GuildId)
         .then((res) => {
