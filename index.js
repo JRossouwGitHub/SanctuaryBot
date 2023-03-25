@@ -31,6 +31,9 @@ function GetGuildKills(client){
         .then((res) => {
             let data = res.data.filter(event => !KillEvents.includes(event.EventId))
             data.map(event => {
+                let d = new Date(event.TimeStamp)
+                let dateTime = d.getFullYear() + "/" + ((d.getMonth() + 1) < 10 ? ("0" + (d.getMonth() + 1)) : (d.getMonth() + 1)) + "/" + (d.getDate() < 10 ? ("0"+d.getDate()) : d.getDate()) + " - " + (d.getHours() < 10 ? ("0"+d.getHours()) : d.getHours()) + ":" + (d.getMinutes() < 10 ? ("0" + d.getMinutes()) : d.getMinutes())
+                let fame = event.TotalVictimKillFame
                 KillEvents.push(event.EventId)
                 let header = "[*"+event.Killer.GuildName+"*] __" + event.Killer.Name + "__ ("+event.Killer.AverageItemPower.toFixed(0)+")" + ' ⚔️ ' + "[*"+event.Victim.GuildName+"*] __" +  event.Victim.Name + "__ ("+event.Victim.AverageItemPower.toFixed(0)+")"
                 let assists = event.Participants.filter(p => p.Name != event.Killer.Name).map(p => p.Name)
