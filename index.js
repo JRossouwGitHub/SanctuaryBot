@@ -30,7 +30,6 @@ function GetGuildKills(client){
     axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?guildId="+GuildId)
         .then((res) => {
             let data = res.data.filter(event => !KillEvents.includes(event.EventId))
-            data.length = 1
             data.map(event => {
                 KillEvents.push(event.EventId)
                 let header = "[*"+event.Killer.GuildName+"*] __" + event.Killer.Name + "__ ("+event.Killer.AverageItemPower.toFixed(0)+")" + ' ⚔️ ' + "[*"+event.Victim.GuildName+"*] __" +  event.Victim.Name + "__ ("+event.Victim.AverageItemPower.toFixed(0)+")"
