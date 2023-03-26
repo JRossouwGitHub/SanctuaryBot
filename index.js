@@ -17,7 +17,8 @@ const messageEmbed = require('./utilities/messageEmbed.js').messageEmbed
 const token = require("./config.json").DISCORD_TOKEN
 const PORT = require("./config.json").PORT
 const PREFIX = '!'
-const ChannelID = "1069880358130176010"
+const ChannelID = "1089130944939704391"
+
 let LastEvent = 0
 
 //Called after login
@@ -27,7 +28,14 @@ client.on('ready', () => {
         activities: [{ name: `Albion Online East`, type: ActivityType.Playing }],
     })
 
-    setInterval(() => GetGuildKills(client), 1000 * 10)
+    setInterval(() => {
+        let storage = fs.readFileSync("./storage.json", (e) => {
+            console.log(e)
+        })
+        
+        LastEvent = JSON.parse(storage.toString()).EventId
+        GetGuildKills(client)
+    }, 1000 * 10)
 })
 
 function GetGuildKills(client){
@@ -38,7 +46,8 @@ function GetGuildKills(client){
             data.length = 1
             data.map(event => {
                 let d = new Date(event.TimeStamp)
-                LastEvent = event.EventId
+                let eventId = {"EventId": event.EventId}
+                fs.writeFileSync('./storage.json', JSON.stringify(eventId), 'utf8', (e) => console.log(e));
                 let header = "[*"+event.Killer.GuildName+"*] __" + event.Killer.Name + "__ ("+event.Killer.AverageItemPower.toFixed(0)+")" + ' ⚔️ ' + "[*"+event.Victim.GuildName+"*] __" +  event.Victim.Name + "__ ("+event.Victim.AverageItemPower.toFixed(0)+")"
                 let assists = event.Participants.filter(p => p.Name != event.Killer.Name).map(p => p.Name)
                 axios.get(`http://localhost:${PORT}/image`, {
