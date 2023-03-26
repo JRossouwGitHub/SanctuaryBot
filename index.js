@@ -16,6 +16,7 @@ const config = require('./config.json')
 const messageEmbed = require('./utilities/messageEmbed.js').messageEmbed
 const token = require("./config.json").DISCORD_TOKEN
 const PREFIX = '!'
+const ChannelID = "1069880358130176010"
 let LastEvent = 0
 
 //Called after login
@@ -79,7 +80,7 @@ function GetGuildKills(client){
                         //console.log(res)
                     })
                     .then(data => {
-                        client.channels.cache.get('1089130944939704391').send(messageEmbed(
+                        client.channels.cache.get(ChannelID).send(messageEmbed(
                             header,
                             null,
                             "Assist: " + (event.Participants.filter(p => p.Name != event.Killer.Name).length > 0 ? assists : "none"),
@@ -88,7 +89,7 @@ function GetGuildKills(client){
                         ));
                         setTimeout(() => {
                             const image = new AttachmentBuilder('image.png');
-                            client.channels.cache.get('1089130944939704391').send({embeds: [], files: [image]})
+                            client.channels.cache.get(ChannelID).send({embeds: [], files: [image]})
                         }, 1000 * 3)
                     })
                     .catch(err => console.log(err))
