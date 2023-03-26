@@ -17,7 +17,7 @@ const messageEmbed = require('./utilities/messageEmbed.js').messageEmbed
 const token = require("./config.json").DISCORD_TOKEN
 const PORT = require("./config.json").PORT
 const PREFIX = '!'
-const ChannelID = "1089130944939704391"
+const ChannelID = "1069880358130176010"
 let LastEvent = 0
 
 //Called after login
