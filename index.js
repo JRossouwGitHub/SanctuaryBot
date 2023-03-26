@@ -2,7 +2,7 @@
 const GuildId = "VSpS1s5URK6vMQCB-XU5NQ"
 const axios = require('axios')
 const Discord = require('discord.js')
-const { Client, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, Events, Partials, AttachmentBuilder } = require('discord.js')
+const { Client, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, Events, Partials, AttachmentBuilder, ActivityType } = require('discord.js')
 const client = new Discord.Client(
     { 
         intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions],
@@ -21,7 +21,9 @@ let LastEvent = 0
 //Called after login
 client.on('ready', () => {
     console.log('SanctuaryBot is Online!')
-    client.user.setActivity('Albion Online', {type: "Playing"}) //Not working?
+    client.user.setPresence({
+        activities: [{ name: `Albion Online East`, type: ActivityType.Playing }],
+    })
 
     setInterval(() => GetGuildKills(client), 1000 * 10)
 })
