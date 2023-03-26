@@ -15,8 +15,9 @@ const path = require('path');
 const config = require('./config.json')
 const messageEmbed = require('./utilities/messageEmbed.js').messageEmbed
 const token = require("./config.json").DISCORD_TOKEN
+const PORT = require("./config.json").PORT
 const PREFIX = '!'
-const ChannelID = "1069880358130176010"
+const ChannelID = "1089130944939704391"
 let LastEvent = 0
 
 //Called after login
@@ -40,7 +41,7 @@ function GetGuildKills(client){
                 LastEvent = event.EventId
                 let header = "[*"+event.Killer.GuildName+"*] __" + event.Killer.Name + "__ ("+event.Killer.AverageItemPower.toFixed(0)+")" + ' ⚔️ ' + "[*"+event.Victim.GuildName+"*] __" +  event.Victim.Name + "__ ("+event.Victim.AverageItemPower.toFixed(0)+")"
                 let assists = event.Participants.filter(p => p.Name != event.Killer.Name).map(p => p.Name)
-                axios.get("http://localhost:3000/image", {
+                axios.get(`http://localhost:${PORT}/image`, {
                     data: {
                         background: "background.png",
                         killer: {

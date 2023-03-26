@@ -4,10 +4,12 @@
   "description": "To perform tasks related to the Sactuary guild.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js && server.js",
-    "discord": "nodemon index.js",
-    "server": "nodemon server.js",
-    "dev": "concurrently \"npm run server\" \"npm run discord\""
+    "discord": "node index.js",
+    "server": "node server.js",
+    "start": "concurrently \"npm run server\" \"npm run discord\"",
+    "discord-dev": "nodemon index.js",
+    "server-dev": "nodemon server.js",
+    "dev": "concurrently \"npm run server-dev\" \"npm run discord-dev\""
   },
   "author": "Jacques Rossouw | PalmTop",
   "license": "ISC",

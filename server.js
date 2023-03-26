@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const PORT = process.env.PORT || 3000;
+const PORT = require("./config.json").PORT;
 const bodyParser = require('body-parser')
 const fs = require("fs");
 const { createCanvas, loadImage } = require('canvas')
