@@ -12,9 +12,10 @@ const GetAllDataFromEvent = (event) => {
 const GetDataForImage = (event) => {
     let d = new Date(event.TimeStamp)
     let eventId = { "EventId": event.EventId }
+    let items = event.Victim.Inventory.filter(item => item != null)
     fs.writeFileSync('./storage.json', JSON.stringify(eventId), 'utf8', (e) => console.log(e));
     return {
-        background: "background.png",
+        background: "background"+Math.ceil(items.length / 9)+".png",
         killer: {
             Name: "[" + event.Killer.GuildName + "] " + event.Killer.Name + " (" + event.Killer.AverageItemPower.toFixed(0) + ")",
             MainHand: (event.Killer.Equipment.MainHand ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.MainHand.Type + "?quality=" + event.Killer.Equipment.MainHand.Quality : "blank.png"),
@@ -40,6 +41,9 @@ const GetDataForImage = (event) => {
             Mount: (event.Victim.Equipment.Mount ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Mount.Type + "?quality=" + event.Victim.Equipment.Mount.Quality : "blank.png"),
             Potion: (event.Victim.Equipment.Potion ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Potion.Type + "?quality=" + event.Victim.Equipment.Potion.Quality : "blank.png"),
             Food: (event.Victim.Equipment.Food ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Food.Type + "?quality=" + event.Victim.Equipment.Food.Quality : "blank.png"),
+        },
+        inventory: {
+            items: items
         },
         event: {
             date: d.getFullYear() + "/" + ((d.getMonth() + 1) < 10 ? ("0" + (d.getMonth() + 1)) : (d.getMonth() + 1)) + "/" + (d.getDate() < 10 ? ("0" + d.getDate()) : d.getDate()),
