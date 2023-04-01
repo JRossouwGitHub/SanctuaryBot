@@ -44,9 +44,9 @@ client.on('ready', () => {
 })
 
 function GetGuildKills(client) {
-    axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?guildId=" + GuildId)
+    axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?limit=50&offset=0")
         .then((res) => {
-            let data = res.data.filter(event => event.EventId > LastEvent)
+            let data = res.data.filter(event => event.EventId > LastEvent && (event.Killer.GuildId == GuildId || event.Victim.GuildId == GuildId))
             data = data.sort((a, b) => { return (a.TimeStamp < b.TimeStamp ? -1 : 1) })
             data.length = 1
             data.map(event => {
@@ -60,7 +60,7 @@ function GetGuildKills(client) {
                             messageEmbed(
                                 header,
                                 null,
-                                "Assist: " + (assists.length > 0 ? assists.map(p => p.Name) : "none"),
+                                "Assist:" + (assists.length > 0 ? assists.map(p => " " + p.Name) : " none"),
                                 { name: 'Details', value: 'See image below' },
                                 null
                             )
