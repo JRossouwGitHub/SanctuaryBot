@@ -21,7 +21,3 @@ exports.MessageEmbed = (
 
     return {embeds: [embed], files: [file]}
 }
-
-// module.exports = {
-//     messageEmbed
-// }
