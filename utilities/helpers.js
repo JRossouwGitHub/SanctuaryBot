@@ -2,7 +2,7 @@ const fs = require("fs");
 
 
 const GetAllDataFromEvent = (event) => {
-    let header = "[*" + event.Killer.GuildName + "*] __" + event.Killer.Name + "__ (" + event.Killer.AverageItemPower.toFixed(0) + ")" + ' ⚔️ ' + "[*" + event.Victim.GuildName + "*] __" + event.Victim.Name + "__ (" + event.Victim.AverageItemPower.toFixed(0) + ")"
+    let header = (event.Killer.GuildName ? ("[*" + event.Killer.GuildName + "*] ") : "") +  "__" + event.Killer.Name + "__ (" + event.Killer.AverageItemPower.toFixed(0) + ")" + ' ⚔️ ' + (event.Victim.GuildName ? ("[*" + event.Victim.GuildName + "*] ") : "") + "__" + event.Victim.Name + "__ (" + event.Victim.AverageItemPower.toFixed(0) + ")"
     let assists = event.Participants.filter(p => p.Name != event.Killer.Name)
     let imgData = GetDataForImage(event)
 
@@ -17,7 +17,7 @@ const GetDataForImage = (event) => {
     return {
         background: "background"+Math.ceil(items.length / 9)+".png",
         killer: {
-            Name: "[" + event.Killer.GuildName + "] " + event.Killer.Name + " (" + event.Killer.AverageItemPower.toFixed(0) + ")",
+            Name: (event.Killer.GuildName ? ("[" + event.Killer.GuildName + "] ") : "") + event.Killer.Name + " (" + event.Killer.AverageItemPower.toFixed(0) + ")",
             MainHand: (event.Killer.Equipment.MainHand ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.MainHand.Type + "?quality=" + event.Killer.Equipment.MainHand.Quality : "blank.png"),
             OffHand: (event.Killer.Equipment.OffHand ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.OffHand.Type + "?quality=" + event.Killer.Equipment.OffHand.Quality : "blank.png"),
             Head: (event.Killer.Equipment.Head ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.Head.Type + "?quality=" + event.Killer.Equipment.Head.Quality : "blank.png"),
@@ -28,9 +28,11 @@ const GetDataForImage = (event) => {
             Mount: (event.Killer.Equipment.Mount ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.Mount.Type + "?quality=" + event.Killer.Equipment.Mount.Quality : "blank.png"),
             Potion: (event.Killer.Equipment.Potion ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.Potion.Type + "?quality=" + event.Killer.Equipment.Potion.Quality : "blank.png"),
             Food: (event.Killer.Equipment.Food ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.Food.Type + "?quality=" + event.Killer.Equipment.Food.Quality : "blank.png"),
+            PotionCount: (event.Killer.Equipment.Potion ? event.Killer.Equipment.Potion.Count : null),
+            FoodCount: (event.Killer.Equipment.Food ? event.Killer.Equipment.Food.Count : null),
         },
         victim: {
-            Name: "[" + event.Victim.GuildName + "] " + event.Victim.Name + " (" + event.Victim.AverageItemPower.toFixed(0) + ")",
+            Name: (event.Victim.GuildName ? ("[" + event.Victim.GuildName + "] ") : "") + event.Victim.Name + " (" + event.Victim.AverageItemPower.toFixed(0) + ")",
             MainHand: (event.Victim.Equipment.MainHand ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.MainHand.Type + "?quality=" + event.Victim.Equipment.MainHand.Quality : "blank.png"),
             OffHand: (event.Victim.Equipment.OffHand ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.OffHand.Type + "?quality=" + event.Victim.Equipment.OffHand.Quality : "blank.png"),
             Head: (event.Victim.Equipment.Head ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Head.Type + "?quality=" + event.Victim.Equipment.Head.Quality : "blank.png"),
@@ -41,6 +43,8 @@ const GetDataForImage = (event) => {
             Mount: (event.Victim.Equipment.Mount ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Mount.Type + "?quality=" + event.Victim.Equipment.Mount.Quality : "blank.png"),
             Potion: (event.Victim.Equipment.Potion ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Potion.Type + "?quality=" + event.Victim.Equipment.Potion.Quality : "blank.png"),
             Food: (event.Victim.Equipment.Food ? "https://render.albiononline.com/v1/item/" + event.Victim.Equipment.Food.Type + "?quality=" + event.Victim.Equipment.Food.Quality : "blank.png"),
+            PotionCount: (event.Victim.Equipment.Potion ? event.Victim.Equipment.Potion.Count : null),
+            FoodCount: (event.Victim.Equipment.Food ? event.Victim.Equipment.Food.Count : null),
         },
         inventory: {
             items: items
