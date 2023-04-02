@@ -1,8 +1,4 @@
 //Initialize Discord object
-const GuildId = "VSpS1s5URK6vMQCB-XU5NQ"
-const { rejects } = require('assert')
-const axios = require('axios')
-const { debug } = require('console')
 const Discord = require('discord.js')
 const { Client, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, Events, Partials, AttachmentBuilder, ActivityType } = require('discord.js')
 const client = new Discord.Client(
@@ -12,19 +8,9 @@ const client = new Discord.Client(
     }
 )
 //Constants
-const fs = require("fs");
-const { resolve } = require('path')
-const path = require('path');
 const config = require('./config.json')
-const messageEmbed = require('./utilities/messageEmbed.js').messageEmbed
-const helpers = require('./utilities/helpers.js')
-
-const token = config.DISCORD_TOKEN
-const PORT = config.PORT
-const ChannelID = config.CHANNEL_ID
-const PREFIX = '!'
-
-let LastEvent = 0
+const token = config.DISCORD.DISCORD_TOKEN
+const PREFIX = config.DISCORD.PREFIX
 
 //Called after login
 client.on('ready', () => {
@@ -32,53 +18,9 @@ client.on('ready', () => {
     client.user.setPresence({
         activities: [{ name: `Albion Online East`, type: ActivityType.Playing }],
     })
-
-    setInterval(() => {
-        let storage = fs.readFileSync("./storage.json", (e) => {
-            console.log(e)
-        })
-
-        LastEvent = JSON.parse(storage.toString()).EventId
-        GetGuildKills(client)
-    }, 1000 * 10)
 })
 
-function GetGuildKills(client) {
-    axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?limit=50&offset=0")
-        .then((res) => {
-            let data = res.data.filter(event => event.EventId > LastEvent && (event.Killer.GuildId == GuildId || event.Victim.GuildId == GuildId))
-            data = data.sort((a, b) => { return (a.TimeStamp < b.TimeStamp ? -1 : 1) })
-            data.length = 1
-            data.map(event => {
-                var [header, assists, data] = helpers.GetAllDataFromEvent(event)
-                axios.get(`http://localhost:${PORT}/image`, {
-                    responseType: 'arraybuffer',
-                    data: data
-                })
-                    .then(async (response) => {
-                        await client.channels.cache.get(ChannelID).send(
-                            messageEmbed(
-                                header,
-                                null,
-                                "Assist:" + (assists.length > 0 ? assists.map(p => " " + p.Name) : " none"),
-                                { name: 'Details', value: 'See image below' },
-                                null
-                            )
-                        );
-                        await client.channels.cache.get(ChannelID).send({
-                            embeds: [],
-                            files: [{
-                                attachment: response.data,
-                                name: 'image.png'
-                            }]
-                        })
-                    })
 
-                    .catch(err => console.log(err))
-            })
-        })
-        .catch(err => console.log(err))
-}
 
 //On each message
 client.on('messageCreate', (message) => {
