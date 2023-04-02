@@ -2,7 +2,7 @@ const { EmbedBuilder, AttachmentBuilder } = require('discord.js')
 const file = new AttachmentBuilder('./Icons/SanctuaryIcon.png');
 const SanctuaryIcon = 'attachment://SanctuaryIcon.png'
 
-const messageEmbed = (
+exports.MessageEmbed = (
         title, //Card title
         author, //Author of the card, i.e. {name: 'Mighty Albion Mob'}
         description, //Card description
@@ -20,8 +20,4 @@ const messageEmbed = (
         .setFooter(footer ?? {text: 'Sanctuary Kill Bot - By Odious', iconURL: SanctuaryIcon})
 
     return {embeds: [embed], files: [file]}
-}
-
-module.exports = {
-    messageEmbed
 }

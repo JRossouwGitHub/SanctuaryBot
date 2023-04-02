@@ -1,4 +1,70 @@
 const fs = require("fs");
+const axios = require('axios')
+const path = require('path');
+
+const config = require("../config.json");
+const webhookUrl = config.COMMON.WEBHOOK_URL;
+const GuildId = config.COMMON.GUILD_ID
+
+
+const webhookId = "test name"
+let LastEvent = 0
+
+
+const DiscordHelper = require('./DiscordHelper')
+const DrawPVPImages = require('./DrawPVPImage')
+
+
+process.on('message', async (message) => {
+    console.log('starting service worker thread')
+    await setInterval(async () => {
+        let storage = fs.readFileSync(__dirname + "/storage.json", (e) => {
+            console.log(e)
+        })
+        LastEvent = JSON.parse(storage.toString()).EventId
+        await GetGuildEvents(LastEvent)
+    }, 1000 * 10)
+})
+
+
+const GetGuildEvents = async (LastEvent) => {
+    var res = await axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?limit=50&offset=0")
+
+    let data = res.data.filter(event => event.EventId > LastEvent && (event.Killer.GuildId == GuildId || event.Victim.GuildId == GuildId))
+
+    data = data.sort((a, b) => { return (a.TimeStamp < b.TimeStamp ? -1 : 1) })
+    data.length = 1
+
+    return await data.map(async (event) => {
+        var [header, assists, data] = GetAllDataFromEvent(event)
+
+        var pvpEmbed = DiscordHelper.CreateGuildPVPEmbed(
+            header,
+            null,
+            "Assist:" + (assists.length > 0 ? assists.map(p => " " + p.Name) : " none"),
+            { name: 'Details', value: 'See image below' },
+            null
+        )
+
+        await DiscordHelper.SendToDiscord(
+            webhookUrl,
+            webhookId,
+            pvpEmbed
+        )
+
+        var img = await DrawPVPImages.DrawImage(data)
+        var file = DiscordHelper.CreateDiscordAttachment(img)
+
+        var [embedMsg, fileMsg] = await DiscordHelper.SendToDiscord(
+            webhookUrl,
+            webhookId,
+            {files: [file], embeds: []}
+        )
+
+        return [embedMsg, fileMsg]
+    })
+
+}
 
 
 const GetAllDataFromEvent = (event) => {
@@ -15,7 +81,7 @@ const GetDataForImage = (event) => {
     let items = event.Victim.Inventory.filter(item => item != null)
     fs.writeFileSync('./storage.json', JSON.stringify(eventId), 'utf8', (e) => console.log(e));
     return {
-        background: "background"+Math.ceil(items.length / 9)+".png",
+        background: __dirname + "\\images\\background"+Math.ceil(items.length / 9)+".png",
         killer: {
             Name: (event.Killer.GuildName ? ("[" + event.Killer.GuildName + "] ") : "") + event.Killer.Name + " (" + event.Killer.AverageItemPower.toFixed(0) + ")",
             MainHand: (event.Killer.Equipment.MainHand ? "https://render.albiononline.com/v1/item/" + event.Killer.Equipment.MainHand.Type + "?quality=" + event.Killer.Equipment.MainHand.Quality : "blank.png"),
