@@ -3,7 +3,7 @@ const {
     AttachmentBuilder
 } = require('discord.js');
 
-const MessageEmbed = require('../utilities/MessageEmbed').MessageEmbed
+const MessageEmbed = require('./MessageEmbed').MessageEmbed
 
 exports.CreateDiscordAttachment = (data) => {
     return new AttachmentBuilder(data, {

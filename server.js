@@ -6,11 +6,13 @@ const { fork } = require('child_process');
 const config = require("./config.json");
 const PORT = config.SERVER.PORT;
 
-const GuildEventWorker = fork('./server/GuildEvents.js');
+const GuildEventWorker = fork('./server/pvp/GuildEvents.js');
+const LeaderboardWorker = fork('./server/leaderboards/Leaderboards.js');
 app.use(bodyParser.json())
 
 // this action can be anything; we can use endoints to control it if needed.
-GuildEventWorker.send({ action: 'start' }) 
+GuildEventWorker.send({ action: 'start' })
+LeaderboardWorker.send({ action: 'start' })
 
 app.get('/', (req, res) => {
     res.send('Server is running.')

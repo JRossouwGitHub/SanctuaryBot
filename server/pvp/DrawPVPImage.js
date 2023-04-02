@@ -67,7 +67,7 @@ exports.DrawImage = async (sources) => {
     })
 
     await Promise.all(
-        locations.map(async (location) => {
+        await locations.map(async (location) => {
             try {
                 var img = await loadImage(location.src);
                 ctx.drawImage(img, location.x, location.y, location.w, location.h);
