@@ -57,10 +57,12 @@ const GetAndUpdateLeaderboard = async () => {
 const GetMessageId = (key) => {
     let storage = fs.readFileSync(__dirname + "\\storage.json")
     var message = JSON.parse(storage.toString())
-    return message?.[webhookUrl]?.[key] ?? null
+    return message?.[GetWebhookKey(webhookUrl)]?.[key] ?? null
 }
 
 const SetMessageId = (key, id) => {
-    var data = {[webhookUrl]: {[key]: id}}
+    var data = {[GetWebhookKey(webhookUrl)]: {[key]: id}}
     fs.writeFileSync(__dirname + "\\storage.json", JSON.stringify(data), 'utf8')
 }
+
+const GetWebhookKey = (wh) => wh.split("/").slice(-2).join("/")
