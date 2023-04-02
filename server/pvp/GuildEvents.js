@@ -2,23 +2,21 @@ const fs = require("fs");
 const axios = require('axios')
 const path = require('path');
 
-const config = require("../config.json");
-const webhookUrl = config.COMMON.WEBHOOK_URL;
+const config = require("../../config.json");
+const webhookUrl = config.COMMON.PVP_WEBHOOK_URL;
 const GuildId = config.COMMON.GUILD_ID
 
-
-const webhookId = "test name"
 let LastEvent = 0
 
 
-const DiscordHelper = require('./DiscordHelper')
+const DiscordHelper = require('../../utilities/DiscordHelper')
 const DrawPVPImages = require('./DrawPVPImage')
 
 
 process.on('message', async (message) => {
-    console.log('starting service worker thread')
+    console.log(`Worker thread: ${path.basename(__filename)} \nExecuting message: ${message.action}` )
     await setInterval(async () => {
-        let storage = fs.readFileSync(__dirname + "/storage.json", (e) => {
+        let storage = fs.readFileSync(__dirname + "\\storage.json", (e) => {
             console.log(e)
         })
         LastEvent = JSON.parse(storage.toString()).EventId
@@ -30,7 +28,7 @@ process.on('message', async (message) => {
 const GetGuildEvents = async (LastEvent) => {
     var res = await axios.get("https://gameinfo-sgp.albiononline.com/api/gameinfo/events?limit=50&offset=0")
 
-    let data = res.data.filter(event => event.EventId > LastEvent && (event.Killer.GuildId == GuildId || event.Victim.GuildId == GuildId))
+    let data = res.data.filter(event => event.EventId > LastEvent /*&& (event.Killer.GuildId == GuildId || event.Victim.GuildId == GuildId) */)
 
     data = data.sort((a, b) => { return (a.TimeStamp < b.TimeStamp ? -1 : 1) })
     data.length = 1
@@ -48,20 +46,18 @@ const GetGuildEvents = async (LastEvent) => {
 
         await DiscordHelper.SendToDiscord(
             webhookUrl,
-            webhookId,
+            "",
             pvpEmbed
         )
 
         var img = await DrawPVPImages.DrawImage(data)
         var file = DiscordHelper.CreateDiscordAttachment(img)
 
-        var [embedMsg, fileMsg] = await DiscordHelper.SendToDiscord(
+        await DiscordHelper.SendToDiscord(
             webhookUrl,
-            webhookId,
+            "",
             {files: [file], embeds: []}
         )
-
-        return [embedMsg, fileMsg]
     })
 
 }
@@ -79,7 +75,7 @@ const GetDataForImage = (event) => {
     let d = new Date(event.TimeStamp)
     let eventId = { "EventId": event.EventId }
     let items = event.Victim.Inventory.filter(item => item != null)
-    fs.writeFileSync('./storage.json', JSON.stringify(eventId), 'utf8', (e) => console.log(e));
+    fs.writeFileSync(__dirname + "\\storage.json", JSON.stringify(eventId), 'utf8', (e) => console.log(e));
     return {
         background: __dirname + "\\images\\background"+Math.ceil(items.length / 9)+".png",
         killer: {
